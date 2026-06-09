@@ -27,7 +27,7 @@ map.on('load', () => {
                 'fill-color': '#007cbf',
                 'fill-opacity': 0.6
             }
-        }, 'road-label'); // ✅ THIS LINE IS KEY
+        }); // ✅ THIS LINE IS KEY
 
 
 
