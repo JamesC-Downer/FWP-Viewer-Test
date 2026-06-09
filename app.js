@@ -1,6 +1,6 @@
 
 mapboxgl.accessToken = 'pk.eyJ1IjoiamFtZXNjYWRvd25lciIsImEiOiJjbW1uejZzbjMwOG1iMnNva3A1dnVsZ3B1In0.PXVr6LEZejBta20KC40iyw';
-console.log(map.getStyle().layers);
+
 const map = new mapboxgl.Map({
     container: 'map',
     style: 'mapbox://styles/jamescadowner/cmmnz0qle00g701speyn3avrl',
