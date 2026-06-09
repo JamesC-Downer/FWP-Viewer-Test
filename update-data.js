@@ -1,5 +1,5 @@
 
-import fs from 'fs';
+const fs = require('fs');
 
 // Node 18+ has built-in fetch
 const url = "https://map-auea.ramm.com/v2/mapping/settingdata/2100/efaaf999-983e-4b1f-85a7-5c1492c80481/?format=geojson&projection=wgs84&forcePoint=false";
