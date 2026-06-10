@@ -86,9 +86,9 @@ map.on('click', (e) => {
         .setLngLat(e.lngLat)
         .setHTML(`
             <strong>Renewal ID:</strong> ${renewalID}<br>
-            <strong>Road:</strong> ${road_id}<br>
-            <strong>Planned Year:</strong> ${programme_year}<br>
-            <strong>Treatment:</strong> ${treatment}<br>
+            <strong>Road:</strong> ${f.properties.road_id}<br>
+            <strong>Planned Year:</strong> ${f.properties.programme_year}<br>
+            <strong>Treatment:</strong> ${f.properties.treatment}<br>
             <button onclick="window.open('${formUrl}','_blank')">
                 Add Comment
             </button>
