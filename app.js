@@ -44,7 +44,7 @@ map.on('load', () => {
                 '28/29', '#800026',
                 '#000000'
             ],
-                'fill-opacity': 0.6
+                'fill-opacity': 0
             }
         });
 
