@@ -3,8 +3,10 @@ const fs = require('fs');
 
 // Node 18+ has built-in fetch
 const url = "https://map-auea.ramm.com/v2/mapping/settingdata/2100/efaaf999-983e-4b1f-85a7-5c1492c80481/?format=geojson&projection=wgs84&forcePoint=false";
+const footpathurl = "https://map-auea.ramm.com/v2/mapping/settingdata/2100/de9ddb3c-7ca3-47c9-9dd4-e0c4ef223b78/?format=geojson&projection=wgs84&forcePoint=false";
 
 async function run() {
+    //Roading Data
     console.log("Fetching data...");
 
     const response = await fetch(url);
@@ -70,14 +72,9 @@ const transformed = {
     );
 
     console.log("Road data updated!");
-}
+    await processDataset('roads', "https://map-auea.ramm.com/v2/mapping/settingdata/2100/efaaf999-983e-4b1f-85a7-5c1492c80481/?format=geojson&projection=wgs84&forcePoint=false");
 
-await processDataset('roads', "https://map-auea.ramm.com/v2/mapping/settingdata/2100/efaaf999-983e-4b1f-85a7-5c1492c80481/?format=geojson&projection=wgs84&forcePoint=false");
-// Footpath Data
-// Node 18+ has built-in fetch
-const footpathurl = "https://map-auea.ramm.com/v2/mapping/settingdata/2100/de9ddb3c-7ca3-47c9-9dd4-e0c4ef223b78/?format=geojson&projection=wgs84&forcePoint=false";
-
-async function run() {
+    //Footpath Data
     console.log("Fetching data...");
 
     const footpathresponse = await fetch(footpathurl);
@@ -144,8 +141,6 @@ const footpathtransformed = {
 
     console.log("Footpath data updated!");
 }
-
-
 
 run();
 ``
