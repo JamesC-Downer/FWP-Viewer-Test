@@ -9,7 +9,7 @@ const map = new mapboxgl.Map({
 });
 
 map.on('load', () => {
-    console.log(map.getStyle().layers);
+    
     map.addSource('renewals', {
         type: 'geojson',
 
@@ -72,7 +72,7 @@ map.on('load', () => {
             ['literal', selectedYears]
         ]);
     }
-    
+    console.log(map.getStyle().layers);
 });
 
 
