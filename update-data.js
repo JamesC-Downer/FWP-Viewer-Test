@@ -26,12 +26,21 @@ const transformed = {
             treat_y2: "27/28",
             treat_y3: "28/29"
         };
+        
+        const treatmentMap = {
+                    RJVN: "Rejuvenation",
+                    RHAB: "Rehabilitation",
+                    SAC: "Rehabilitation",
+                    AC: "Asphalt",
+                    RS: "Chipseal"
+                };
+
 
         // ✅ Create one feature per populated treatment year
         return Object.keys(yearMap)
             .filter(key => props[key] && props[key] !== "")
             .map(key => {
-
+                const rawTreatment = props[key];
                 return {
                     ...f,
 
@@ -40,7 +49,7 @@ const transformed = {
                         renewal_id: props.jv_id,
                         road_name: props.road_id || "Unknown",
 
-                        treatment: props[key],
+                        treatment: treatmentMap[rawTreatment] || rawTreatment,
                         programme_year: yearMap[key]
 
                         // 👉 add more renamed fields here if needed
