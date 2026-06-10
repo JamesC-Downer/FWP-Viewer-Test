@@ -1,4 +1,4 @@
-
+// Roading Data
 const fs = require('fs');
 
 // Node 18+ has built-in fetch
@@ -65,12 +65,89 @@ const transformed = {
     fs.mkdirSync('data', { recursive: true });
 
     fs.writeFileSync(
-        'data/renewals.geojson',
+        'data/roads.geojson',
         JSON.stringify(transformed, null, 2)
     );
 
-    console.log("GeoJSON updated!");
+    console.log("Road data updated!");
 }
+
+
+// Footpath Data
+const fs = require('fs');
+
+// Node 18+ has built-in fetch
+const url = "https://map-auea.ramm.com/v2/mapping/settingdata/2100/de9ddb3c-7ca3-47c9-9dd4-e0c4ef223b78/?format=geojson&projection=wgs84&forcePoint=false";
+
+async function run() {
+    console.log("Fetching data...");
+
+    const response = await fetch(url);
+    const geojson = await response.json();
+
+    console.log("Transforming data...");
+
+
+const transformed = {
+    type: "FeatureCollection",
+    features: geojson.features.flatMap(f => {
+
+        const props = f.properties;
+
+        // ✅ Map years to labels
+        const yearMap = {
+            treat26: "26/27",
+            treat27: "27/28",
+            treat28: "28/29",
+            treat29: "29/30"
+        };
+        
+        const treatmentMap = {
+                    RJVN: "Rejuvenation",
+                    RHAB: "Rehabilitation",
+                    SAC: "Rehabilitation",
+                    AC: "Asphalt",
+                    RS: "Chipseal"
+                };
+
+
+        // ✅ Create one feature per populated treatment year
+        return Object.keys(yearMap)
+            .filter(key => props[key] && props[key] !== "")
+            .map(key => {
+                //const rawTreatment = props[key];
+                return {
+                    ...f,
+
+                    properties: {
+                        // ✅ renamed / cleaned fields
+                        renewal_id: props.system_id,
+                        road_name: props.road_id || "Unknown",
+
+                        //treatment: treatmentMap[rawTreatment] || rawTreatment,
+                        programme_year: yearMap[key]
+
+                        // 👉 add more renamed fields here if needed
+                    }
+                };
+
+            });
+    })
+};
+
+
+    // Ensure folder exists
+    fs.mkdirSync('data', { recursive: true });
+
+    fs.writeFileSync(
+        'data/footpaths.geojson',
+        JSON.stringify(transformed, null, 2)
+    );
+
+    console.log("Footpath data updated!");
+}
+
+
 
 run();
 ``
