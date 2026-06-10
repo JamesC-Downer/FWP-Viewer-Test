@@ -72,7 +72,6 @@ map.on('load', () => {
             ['literal', selectedYears]
         ]);
     }
-    console.log(map.getStyle().layers);
 });
 
 
@@ -85,6 +84,8 @@ map.on('idle', () => {
         map.moveLayer('renewals-layer');
         moved = true;
     }
+    
+    console.log(map.getStyle().layers);
 });
 
 
