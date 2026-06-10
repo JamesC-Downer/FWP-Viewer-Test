@@ -85,7 +85,6 @@ map.on('idle', () => {
         moved = true;
     }
     
-    console.log(map.getStyle().layers);
 });
 
 
