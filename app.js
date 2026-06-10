@@ -80,9 +80,6 @@ map.on('load', () => {
 
 
 
-
-let moved = false;
-
 map.on('idle', () => {
 
 try {
