@@ -29,6 +29,7 @@ jobs:
         run: |
           git config user.name "github-actions"
           git config user.email "actions@github.com"
-          git add data/renewals.geojson
+          git add data/roads.geojson
+          git add data/footpaths.geojson
           git commit -m "Update GeoJSON data" || echo "No changes"
           git push
