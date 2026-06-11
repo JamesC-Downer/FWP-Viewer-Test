@@ -86,7 +86,19 @@ map.on('load', () => {
     
         if (selectedYears.length === 0) {
             // Show nothing if nothing selected
-            map.setFilter('roads-layer', ['==', ['get', 'programme_year'], '']);
+                const layers = [
+                    'roads-layer',
+                    'footpaths-layer'
+                ];
+                
+                layers.forEach(layer => {
+                    map.setFilter(layer, [
+                        'in',
+                        ['get', 'programme_year'],
+                        ['literal', selectedYears]
+                    ]);
+                });
+
             return;
         }
     
