@@ -142,21 +142,37 @@ map.addControl(new mapboxgl.NavigationControl());
 
 map.on('click', (e) => {
 
+    
     const features = map.queryRenderedFeatures(e.point, {
-        layers: ['roads-layer',
-                'footpaths-layer',
-                'swcs-layer']
+        layers: ['roads-layer', 'footpaths-layer', 'swcs-layer']
     });
+
 
     console.log(features); // ✅ DEBUG LINE
 
-    if (!features.length) {
-        console.log("No features clicked");
-        return;
-    }
+    if (!features.length) return;
+    
+    let html = `<strong>Select Feature:</strong><br><br>`;
+    
+    features.forEach((f, index) => {
+    
+        html += `
+            <button onclick="selectFeature(${index})">
+                ${f.properties.road_name || f.properties.asset_type} (${f.properties.programme_year})
+            </button><br>
+        `;
+    });
+    
+    new mapboxgl.Popup()
+        .setLngLat(e.lngLat)
+        .setHTML(html)
+        .addTo(map);
+    
+    // Store features globally so buttons can access them
+    window.selectedFeatures = features;
+    window.clickLngLat = e.lngLat;
 
-    const f = features[0];
-
+/*
     const renewalID = f.properties.renewal_id;
     const road = f.properties.road_name;   // ✅ FIXED (was road_id)
     const programme_year = f.properties.programme_year;
@@ -179,7 +195,7 @@ map.on('click', (e) => {
             </button>
         `)
         .addTo(map);
-
+*/
 
 });
 
@@ -212,5 +228,33 @@ function updateYearFilter() {
         }
 
     });
+}
+
+
+function selectFeature(index) {
+
+    const f = window.selectedFeatures[index];
+    const e = window.clickLngLat;
+
+    const renewalID = f.properties.renewal_id;
+    const road = f.properties.road_name;
+    const programme_year = f.properties.programme_year;
+    const treatment = f.properties.treatment;
+
+    const formUrl = `https://forms.office.com/...` +
+        `&rd3642a3a26d141c6a3bb316c9dfe62ce=${encodeURIComponent(renewalID)}`;
+
+    new mapboxgl.Popup()
+        .setLngLat(e)
+        .setHTML(`
+            <strong>Asset:</strong> ${road}<br>
+            <strong>Year:</strong> ${programme_year}<br>
+            <strong>Treatment:</strong> ${treatment}<br>
+            <button onclick="window.open('${formUrl}','_blank')">
+                Add Comment
+            </button>
+        `)
+        .addTo(map);
+
 }
 
