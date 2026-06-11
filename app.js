@@ -112,39 +112,6 @@ function setupUI() {
 
 
 
-function updateYearFilter() {
-
-    const yearCheckboxes = document.querySelectorAll('.year-filter');
-
-    const selectedYears = Array.from(yearCheckboxes)
-        .filter(cb => cb.checked)
-        .map(cb => cb.value);
-
-    console.log("Selected years:", selectedYears);
-
-    const layers = [
-        'roads-layer',
-        'footpaths-layer'
-    ];
-
-    layers.forEach(layer => {
-
-        if (map.getLayer(layer)) {
-
-            map.setFilter(layer,
-                selectedYears.length
-                    ? ['in', ['get', 'programme_year'], ['literal', selectedYears]]
-                    : ['==', ['get', 'programme_year'], '']
-            );
-
-        }
-
-    });
-}
-
-
-
-
 map.on('idle', () => {
 
 try {
@@ -220,4 +187,34 @@ map.on('click', (e) => {
 
 
 });
+
+function updateYearFilter() {
+
+    const yearCheckboxes = document.querySelectorAll('.year-filter');
+
+    const selectedYears = Array.from(yearCheckboxes)
+        .filter(cb => cb.checked)
+        .map(cb => cb.value);
+
+    console.log("Selected years:", selectedYears);
+
+    const layers = [
+        'roads-layer',
+        'footpaths-layer'
+    ];
+
+    layers.forEach(layer => {
+
+        if (map.getLayer(layer)) {
+
+            map.setFilter(layer,
+                selectedYears.length
+                    ? ['in', ['get', 'programme_year'], ['literal', selectedYears]]
+                    : ['==', ['get', 'programme_year'], '']
+            );
+
+        }
+
+    });
+}
 
