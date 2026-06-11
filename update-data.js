@@ -140,76 +140,75 @@ const footpathtransformed = {
     );
 
     console.log("Footpath data updated!");
+
+
+    //SWC Data
+    console.log("Fetching data...");
+    
+        const swcresponse = await fetch(swcurl);
+        const swcgeojson = await swcresponse.json();
+    
+        console.log("Transforming data...");
+    
+    
+    const swctransformed = {
+        type: "FeatureCollection",
+        features: swcgeojson.features.flatMap(f => {
+    
+            const swcprops = f.properties;
+    
+            // ✅ Map years to labels
+            const swcyearMap = {
+                treat26: "26/27",
+                treat27: "27/28",
+                treat28: "28/29",
+                treat29: "29/30"
+            };
+            
+            const swctreatmentMap = {
+                        RJVN: "Rejuvenation",
+                        RHAB: "Rehabilitation",
+                        SAC: "Rehabilitation",
+                        AC: "Asphalt",
+                        RS: "Chipseal"
+                    };
+    
+    
+            // ✅ Create one feature per populated treatment year
+            return Object.keys(swcyearMap)
+                .filter(key => swcprops[key] && swcprops[key] !== "")
+                .map(key => {
+                    //const rawTreatment = props[key];
+                    return {
+                        ...f,
+    
+                        properties: {
+                            // ✅ renamed / cleaned fields
+                            renewal_id: swcprops.system_id,
+                            road_name: swcprops.road_id || "Unknown",
+    
+                            treatment: rawTreatment,
+                            programme_year: swcyearMap[key]
+    
+                            // 👉 add more renamed fields here if needed
+                        }
+                    };
+    
+                });
+        })
+    };
+    
+    
+        // Ensure folder exists
+        fs.mkdirSync('data', { recursive: true });
+    
+        fs.writeFileSync(
+            'data/swcs.geojson',
+            JSON.stringify(swctransformed, null, 2)
+        );
+    
+        console.log("swc data updated!");
+    }
 }
-
-
-//SWC Data
-console.log("Fetching data...");
-
-    const swcresponse = await fetch(swcurl);
-    const swcgeojson = await swcresponse.json();
-
-    console.log("Transforming data...");
-
-
-const swctransformed = {
-    type: "FeatureCollection",
-    features: swcgeojson.features.flatMap(f => {
-
-        const swcprops = f.properties;
-
-        // ✅ Map years to labels
-        const swcyearMap = {
-            treat26: "26/27",
-            treat27: "27/28",
-            treat28: "28/29",
-            treat29: "29/30"
-        };
-        
-        const swctreatmentMap = {
-                    RJVN: "Rejuvenation",
-                    RHAB: "Rehabilitation",
-                    SAC: "Rehabilitation",
-                    AC: "Asphalt",
-                    RS: "Chipseal"
-                };
-
-
-        // ✅ Create one feature per populated treatment year
-        return Object.keys(swcyearMap)
-            .filter(key => swcprops[key] && swcprops[key] !== "")
-            .map(key => {
-                //const rawTreatment = props[key];
-                return {
-                    ...f,
-
-                    properties: {
-                        // ✅ renamed / cleaned fields
-                        renewal_id: swcprops.system_id,
-                        road_name: swcprops.road_id || "Unknown",
-
-                        treatment: rawTreatment,
-                        programme_year: swcyearMap[key]
-
-                        // 👉 add more renamed fields here if needed
-                    }
-                };
-
-            });
-    })
-};
-
-
-    // Ensure folder exists
-    fs.mkdirSync('data', { recursive: true });
-
-    fs.writeFileSync(
-        'data/swcs.geojson',
-        JSON.stringify(swctransformed, null, 2)
-    );
-
-    console.log("swc data updated!");
-}
-
 run();
 ``
