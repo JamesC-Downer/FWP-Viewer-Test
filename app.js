@@ -108,8 +108,52 @@ map.on('load', () => {
             ['literal', selectedYears]
         ]);
     }
-
-
+    
+    // Adding Control Centre
+    document.querySelectorAll('#control-panel input[type="checkbox"]').forEach(cb => {
+    
+        // Only handle layer toggles (not year filters)
+        if (!cb.classList.contains('year-filter')) {
+    
+            cb.addEventListener('change', () => {
+                const layer = cb.value;
+    
+                map.setLayoutProperty(
+                    layer,
+                    'visibility',
+                    cb.checked ? 'visible' : 'none'
+                );
+            });
+    
+        }
+    });
+    
+    
+    const yearCheckboxes = document.querySelectorAll('.year-filter');
+    
+    yearCheckboxes.forEach(cb => {
+        cb.addEventListener('change', updateYearFilter);
+    });
+    
+    function updateYearFilter() {
+    
+        const selectedYears = Array.from(yearCheckboxes)
+            .filter(cb => cb.checked)
+            .map(cb => cb.value);
+    
+        const layers = [
+            'roads-layer',
+            'footpaths-layer'
+        ];
+    
+        layers.forEach(layer => {
+            map.setFilter(layer, [
+                'in',
+                ['get', 'programme_year'],
+                ['literal', selectedYears]
+            ]);
+        });
+    }
 
     
 });
@@ -144,52 +188,7 @@ try {
 // Add nav controls
 map.addControl(new mapboxgl.NavigationControl());
 
-// Adding Control Centre
 
-document.querySelectorAll('#control-panel input[type="checkbox"]').forEach(cb => {
-
-    // Only handle layer toggles (not year filters)
-    if (!cb.classList.contains('year-filter')) {
-
-        cb.addEventListener('change', () => {
-            const layer = cb.value;
-
-            map.setLayoutProperty(
-                layer,
-                'visibility',
-                cb.checked ? 'visible' : 'none'
-            );
-        });
-
-    }
-});
-
-
-const yearCheckboxes = document.querySelectorAll('.year-filter');
-
-yearCheckboxes.forEach(cb => {
-    cb.addEventListener('change', updateYearFilter);
-});
-
-function updateYearFilter() {
-
-    const selectedYears = Array.from(yearCheckboxes)
-        .filter(cb => cb.checked)
-        .map(cb => cb.value);
-
-    const layers = [
-        'roads-layer',
-        'footpaths-layer'
-    ];
-
-    layers.forEach(layer => {
-        map.setFilter(layer, [
-            'in',
-            ['get', 'programme_year'],
-            ['literal', selectedYears]
-        ]);
-    });
-}
 
 
 
