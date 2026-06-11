@@ -70,54 +70,78 @@ map.on('load', () => {
             'fill-opacity': 0.6
         }
     });
-    // Adding Control Centre
-    document.querySelectorAll('#control-panel input[type="checkbox"]').forEach(cb => {
+
+    setupUI();
     
-        // Only handle layer toggles (not year filters)
-        if (!cb.classList.contains('year-filter')) {
-    
+});
+
+
+function setupUI() {
+
+    console.log("Setting up UI...");
+
+    const allCheckboxes = document.querySelectorAll('#control-panel input[type="checkbox"]');
+    console.log("Checkboxes found:", allCheckboxes.length);
+
+    // ---------- ASSET TOGGLES ----------
+    allCheckboxes.forEach(cb => {
+
+        if (!cb.classList.contains("year-filter")) {
+
             cb.addEventListener('change', () => {
-                const layer = cb.value;
-    
+                console.log("Toggling layer:", cb.value);
+
                 map.setLayoutProperty(
-                    layer,
+                    cb.value,
                     'visibility',
                     cb.checked ? 'visible' : 'none'
                 );
             });
-    
+
         }
     });
-    
-    
+
+    // ---------- YEAR FILTER ----------
     const yearCheckboxes = document.querySelectorAll('.year-filter');
-    
+
     yearCheckboxes.forEach(cb => {
         cb.addEventListener('change', updateYearFilter);
     });
-    
-    function updateYearFilter() {
-    
-        const selectedYears = Array.from(yearCheckboxes)
-            .filter(cb => cb.checked)
-            .map(cb => cb.value);
-    
-        const layers = [
-            'roads-layer',
-            'footpaths-layer'
-        ];
-    
-        layers.forEach(layer => {
-            map.setFilter(layer, [
-                'in',
-                ['get', 'programme_year'],
-                ['literal', selectedYears]
-            ]);
-        });
-    }
 
-    
-});
+}
+
+
+
+function updateYearFilter() {
+
+    const yearCheckboxes = document.querySelectorAll('.year-filter');
+
+    const selectedYears = Array.from(yearCheckboxes)
+        .filter(cb => cb.checked)
+        .map(cb => cb.value);
+
+    console.log("Selected years:", selectedYears);
+
+    const layers = [
+        'roads-layer',
+        'footpaths-layer'
+    ];
+
+    layers.forEach(layer => {
+
+        if (map.getLayer(layer)) {
+
+            map.setFilter(layer,
+                selectedYears.length
+                    ? ['in', ['get', 'programme_year'], ['literal', selectedYears]]
+                    : ['==', ['get', 'programme_year'], '']
+            );
+
+        }
+
+    });
+}
+
 
 
 
