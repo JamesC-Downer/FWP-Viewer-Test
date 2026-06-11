@@ -1,6 +1,9 @@
 
 mapboxgl.accessToken = 'pk.eyJ1IjoiamFtZXNjYWRvd25lciIsImEiOiJjbW1uejZzbjMwOG1iMnNva3A1dnVsZ3B1In0.PXVr6LEZejBta20KC40iyw';
+
 let selectionPopup = null;
+let detailPopup = null;
+
 
 const map = new mapboxgl.Map({
     container: 'map',
@@ -145,6 +148,17 @@ map.addControl(new mapboxgl.NavigationControl());
 
 map.on('click', (e) => {
 
+    // ✅ Clear all existing popups before creating a new one
+    if (selectionPopup) {
+        selectionPopup.remove();
+        selectionPopup = null;
+    }
+
+    if (detailPopup) {
+        detailPopup.remove();
+        detailPopup = null;
+    }
+
     const features = map.queryRenderedFeatures(
         [
             [e.point.x - 5, e.point.y - 5],
@@ -254,11 +268,19 @@ function updateYearFilter() {
 
 function selectFeature(index) {
 
-    // ✅ CLOSE the selection popup
+    
+ // ✅ REMOVE selection popup
     if (selectionPopup) {
         selectionPopup.remove();
         selectionPopup = null;
     }
+
+    // ✅ REMOVE existing detail popup (THIS IS WHAT YOU’RE MISSING)
+    if (detailPopup) {
+        detailPopup.remove();
+        detailPopup = null;
+    }
+
 
     const f = window.selectedFeatures[index];
     const e = window.clickLngLat;
@@ -270,20 +292,23 @@ function selectFeature(index) {
 
     const formUrl =  `https://forms.office.com/Pages/ResponsePage.aspx?ID=4sZL-u3A7EOdbRRefjahpbdh-kCimPNDuvfbFYBkNKlUNVU3MFRSTlZWUzBXRjIyTUxEQkVVRUs5QS4u` +
         `&rd3642a3a26d141c6a3bb316c9dfe62ce=${encodeURIComponent(renewalID)}` +
-        `&rbf50a96cf4884b49857a7ba85328cbd6=${e.lngLat.lat}` +
-        `&rd4fae6caa7f0416896a745e1042e1b55=${e.lngLat.lng}`;
+        `&rbf50a96cf4884b49857a7ba85328cbd6=${lngLat.lat}` +
+        `&rd4fae6caa7f0416896a745e1042e1b55=${lngLat.lng}`;
 
-    new mapboxgl.Popup()
-        .setLngLat(e)
-        .setHTML(`
-            <strong>Asset:</strong> ${road}<br>
-            <strong>Year:</strong> ${programme_year}<br>
-            <strong>Treatment:</strong> ${treatment}<br>
-            <button onclick="window.open('${formUrl}','_blank')">
-                Add Comment
-            </button>
-        `)
-        .addTo(map);
+
+    // ✅ CREATE + STORE detail popup
+        detailPopup = new mapboxgl.Popup()
+            .setLngLat(lngLat)
+            .setHTML(`
+                <strong>Asset:</strong> ${road}<br>
+                <strong>Year:</strong> ${programme_year}<br>
+                <strong>Treatment:</strong> ${treatment}<br>
+                <button onclick="window.open('${formUrl}','_blank')">
+                    Add Comment
+                </button>
+            `)
+            .addTo(map);
+
 
 }
 
