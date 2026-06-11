@@ -141,27 +141,40 @@ map.addControl(new mapboxgl.NavigationControl());
 // When user clicks a renewal feature
 
 
+
 map.on('click', (e) => {
 
-    const features = map.queryRenderedFeatures(e.point, {
-        layers: ['roads-layer', 'footpaths-layer', 'swcs-layer']
-    });
+    const features = map.queryRenderedFeatures(
+        [
+            [e.point.x - 5, e.point.y - 5],
+            [e.point.x + 5, e.point.y + 5]
+        ]
+    );
+
+    console.log("Features found:", features.length);
 
     if (!features.length) return;
 
-    // ✅ Store features globally so we can access them later
-    window.selectedFeatures = features;
+    // Filter to only your layers
+    const validLayers = ['roads-layer', 'footpaths-layer', 'kerb-layer'];
+
+    const filtered = features.filter(f => validLayers.includes(f.layer.id));
+
+    if (!filtered.length) return;
+
+    window.selectedFeatures = filtered;
     window.clickLngLat = e.lngLat;
 
     let html = `<strong>Select Feature:</strong><br><br>`;
 
-    features.forEach((f, index) => {
+    filtered.forEach((f, index) => {
 
-        const name = f.properties.road_name || "Unknown";
+        const assetType = f.layer.id.replace('-layer', '');
+        const name = f.properties.road_name || assetType;
 
         html += `
             <button onclick="selectFeature(${index})" style="margin-bottom:5px;">
-                ${name} (${f.properties.programme_year})
+                ${assetType.toUpperCase()} – ${name} (${f.properties.programme_year})
             </button><br>
         `;
     });
