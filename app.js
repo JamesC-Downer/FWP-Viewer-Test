@@ -110,8 +110,7 @@ function setupUI() {
 
 }
 
-
-
+/*
 map.on('idle', () => {
 
 try {
@@ -135,13 +134,10 @@ try {
 
     
 });
-
+*/
 
 // Add nav controls
 map.addControl(new mapboxgl.NavigationControl());
-
-
-
 
 
 // When user clicks a renewal feature
