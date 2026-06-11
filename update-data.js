@@ -110,7 +110,7 @@ const footpathtransformed = {
         return Object.keys(footpathyearMap)
             .filter(key => footpathprops[key] && footpathprops[key] !== "")
             .map(key => {
-                //const rawTreatment = props[key];
+                const footpathrawTreatment = footpathprops[key];
                 return {
                     ...f,
 
@@ -119,7 +119,7 @@ const footpathtransformed = {
                         renewal_id: footpathprops.system_id,
                         road_name: footpathprops.road_id || "Unknown",
 
-                        treatment: rawTreatment,
+                        treatment: footpathrawTreatment,
                         programme_year: footpathyearMap[key]
 
                         // 👉 add more renamed fields here if needed
@@ -178,7 +178,7 @@ const footpathtransformed = {
             return Object.keys(swcyearMap)
                 .filter(key => swcprops[key] && swcprops[key] !== "")
                 .map(key => {
-                    //const rawTreatment = props[key];
+                    const swcrawTreatment = swcprops[key];
                     return {
                         ...f,
     
@@ -187,7 +187,7 @@ const footpathtransformed = {
                             renewal_id: swcprops.system_id,
                             road_name: swcprops.road_id || "Unknown",
     
-                            treatment: rawTreatment,
+                            treatment: swcrawTreatment,
                             programme_year: swcyearMap[key]
     
                             // 👉 add more renamed fields here if needed
