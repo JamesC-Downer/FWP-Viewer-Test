@@ -140,37 +140,36 @@ map.addControl(new mapboxgl.NavigationControl());
 
 // When user clicks a renewal feature
 
+
 map.on('click', (e) => {
 
-    
     const features = map.queryRenderedFeatures(e.point, {
         layers: ['roads-layer', 'footpaths-layer', 'swcs-layer']
     });
 
-
-    console.log(features); // ✅ DEBUG LINE
-
     if (!features.length) return;
-    
+
+    // ✅ Store features globally so we can access them later
+    window.selectedFeatures = features;
+    window.clickLngLat = e.lngLat;
+
     let html = `<strong>Select Feature:</strong><br><br>`;
-    
+
     features.forEach((f, index) => {
-    
+
+        const name = f.properties.road_name || "Unknown";
+
         html += `
-            <button onclick="selectFeature(${index})">
-                ${f.properties.road_name || f.properties.asset_type} (${f.properties.programme_year})
+            <button onclick="selectFeature(${index})" style="margin-bottom:5px;">
+                ${name} (${f.properties.programme_year})
             </button><br>
         `;
     });
-    
+
     new mapboxgl.Popup()
         .setLngLat(e.lngLat)
         .setHTML(html)
         .addTo(map);
-    
-    // Store features globally so buttons can access them
-    window.selectedFeatures = features;
-    window.clickLngLat = e.lngLat;
 
 /*
     const renewalID = f.properties.renewal_id;
